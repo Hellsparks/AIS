@@ -3,11 +3,14 @@
 #---------------------------------------------------------------------------------
 import random
 import string
+import matplotlib.pyplot as plt
+import numpy as np
+
 itteration  = 0
 Generation  = []
 results     = []
 letters     = string.ascii_lowercase + " " +string.ascii_uppercase
-
+GraphFit    = []
 #---------------------------------------------------------------------------------
 #                       Functions
 #---------------------------------------------------------------------------------
@@ -22,7 +25,8 @@ def uniCross(inA, inB):
     outA = []
     outB = []
     for i in range(len(name)):
-        if bool(random.getrandbits(1)):
+        chance = random.randint(1, 100)
+        if chance <= Cross:3
             outA.append(inB[i])
             outB.append(inA[i])
         else:
@@ -34,10 +38,10 @@ def sortGen(Gen, Res):
     bib = sorted(zip(Res, Gen))
     return bib[-1], bib[-2]
 
-def mutation(guess, rate, n):
+def mutation(guess, rate, size):
     foo = []
     foo[:0] = guess
-    for i in range(n):
+    for i in range(size):
         digit = random.randint(0, len(name) - 1)
         chance = random.randint(1, 100)
         if chance <= rate:
@@ -55,18 +59,19 @@ def populate(genlist, n):
 #---------------------------------------------------------------------------------
 #                       User input variables
 #---------------------------------------------------------------------------------
-gen     = 100               # num of instances per gen
-name    = "Thomas Olsen"    # Key name
+gen     = 10               # num of instances per gen
+name    = "Thomas Hellstrom Olsen"    # Key name
 mRate   = 30                # Mutation chance %
 mSize   = 3                 # Num of possible mutations
-cutoff  = 5000              # Max itterations in while loop
+cutoff  = 100000              # Max itterations in while loop
+Cross   = 10
 
 #---------------------------------------------------------------------------------
 #                       Initialization of random names
 #---------------------------------------------------------------------------------
 for i in range(gen):
     Generation.append("".join(random.choice(letters) for j in range(len(name))))
-
+print("Population size:"+str(gen)+"   MutationRate:"+str(mRate)+"   MutationSize:"+str(mSize)+"   CrossoverChance:"+str(Cross)+"   Name: "+name)
 #---------------------------------------------------------------------------------
 #                       AG itteration
 #---------------------------------------------------------------------------------
@@ -76,9 +81,13 @@ while itteration < cutoff:
     best = sortGen(Generation, results)
     if best[-1][0] == 1:
         print("Generation: " + str(itteration) + ".   name found: " + str(best[-1][1]))
-        print(len(name))
+        fix, ax = plt.subplots()
+        ax.plot(np.linspace(0, itteration, itteration), GraphFit)
+        ax.set(xlabel="Generations", ylabel="Best Fitness score", title="Top preformers")
+        plt.show()
         break
     print("Generation: " + str(itteration) + ".   Closest match: " + f'{best[-1][0]:.5f}' + "  Guess: " + str(best[-1][1]))
+    GraphFit.append(best[-1][0])
     mangled = uniCross(best[0][1], best[1][1])
     Generation = []
     results = []
