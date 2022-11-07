@@ -26,7 +26,7 @@ def uniCross(inA, inB):
     outB = []
     for i in range(len(name)):
         chance = random.randint(1, 100)
-        if chance <= Cross:3
+        if chance <= Cross:
             outA.append(inB[i])
             outB.append(inA[i])
         else:
